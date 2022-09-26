@@ -1,11 +1,10 @@
 ---
 created: 2022-09-24T04:25:50+10:00
-updated: 2022-09-27T00:51:24+10:00
+updated: 2022-09-27T01:24:53+10:00
 tags: [command-injection, discord-bot, discord.js]
 ---
 # Slash flag
-![[Pasted image 20220926211409.png]]
-
+![slash flag challenge description](images/challengedesc.png)
 ## Contents
 1. [[#Preface]]
 2. [[#Just use a command simple right]]
@@ -22,10 +21,10 @@ So a long time ago discord used to be a wild place where to have a bot running, 
 First thing's first, you want to figure out what it does right?
 Tried the good o'l `!help` and a few equivalents in a DM, to no avail
 Let's actually look at its profile properly
- ![[Pasted image 20220925214050.png]]
+ ![bot profile linking to github](images/botprofile.png)
  Open source, very nice
  A cursory glance reveals that it has `clear`, `create`, `delete`, `list`, and `open` as available commands
- ![[Pasted image 20220925213206.png]] [^1]
+ ![it only works in a server](images/nodmforyou.png) [^1]
 
 Oh, I guess you can't use it privately, that's a shame
 Time to experiment on the bot spam channel in public :s
@@ -33,26 +32,26 @@ Time to experiment on the bot spam channel in public :s
 absolutely nothing
 let's try something fancy I just learned from another competitor the night before
 
-![[Pasted image 20220926205018.png]]
+![command text embed for list when click](images/listcommandembed.png)
 Turns out you can embed slash commands in chat just like mentions and channels with `</name:commandid>`, and you can grab that id by right clicking on that command popup which I got from the DM (with developer mode enabled)
 But it's also weird that it's showing up a little unusual because normally it appears like this:
-![[Pasted image 20220926205255.png]]
+![list slash command](images/listcommand.png)
 Time to use it anyway
-![[Pasted image 20220925214141.png]]
+![you are not an organiser so you cannot use this bot](images/notanorganiser.png)
 Oh bugger, I know this bot doesn't have any role granting capabilities, and the only other bot that does is actually reasonably secured(I had already jokingly tried giving myself another role earlier)
 My immediate next thought was to check to see if it had an invite to server button, and nope, nothing there either.
 Because I had actually operated my own bot previously, I remembered that the button is just a link to the same link that you used to have to manually get and send to someone for them to invite it to their server.
 Lucky for me I didn't even have to go further than typing `discord oauth` into my url bar to find an old invite link I could modify, however this link involved wildly different capabilities, none of which even included command usage, so I begrudgingly looked up discord bot oauth, which at least this time already had an example that was perfect for this, no broken url redirects nor unsuitable capabilities.
 All I had to do now was just replace the id with the bot id
 https://discord.com/oauth2/authorize?client_id=1006037829345882173&permissions=0&scope=bot%20applications.commands
-![[Pasted image 20220926210335.png]] [^2]
+![bot invite page](images/botinvite.png) [^2]
 Just had to go through the process of logging into discord through my browser and authorising it to one of my private servers, and now we're getting somewhere :)
 Run a command to sanity check things
-![[Pasted image 20220926215145.png]]
+![oops im still not an organiser](images/notanorganiser.png)
 Oops, forgot about that one, time to create a role for that
-![[Pasted image 20220926215307.png]]
+![organiser achieved](images/organiser.png)
 Here we go again and
-![[Pasted image 20220925214210.png]]
+![tried to open a flag and failed](images/listfnotflags.png)
 Nice! Not the result I was after, but a huge step forward
 
 ## This is not the command you're looking for
@@ -70,7 +69,7 @@ const filename = quote(interaction.options.getString("filename").toUpperCase().s
 out = await runCommand(`cat ${filename}`, interaction.guildId);
 ```
 At first glance this looked like the parameters to `runCommand` were very vulnerable to command injection, but alas
-![[Pasted image 20220926221220.png]]
+![failed open abuse](images/opentestls.png)
 That explains why I typed `flag` but got `FLAG`, but it also separates words to an array? Interesting, running a quick test in Node gives me this
 ```js
 > `cat ${["A","B","C"]}`
@@ -79,7 +78,7 @@ That explains why I typed `flag` but got `FLAG`, but it also separates words to 
 How annoying
 I probably spent a little too long focusing on this before I realised a key detail about that first line of code... `quote()`
 Having a quick look reveals this
-![[Pasted image 20220926223412.png]]
+![return a quoted string for the array args suitable for using in shell commands](images/quote.png)
 So it turns out that it actually wasn't vulnerable through this method, now what?
 List? Clear? Unfortunately these don't appear to take any user input.
 Delete? Turns out the parameters were sanitised like in /open. [^3]
@@ -97,31 +96,32 @@ What's this? Filename injection? Nice.
 ## This is gonna get a little *creative*
 Let's try something
 `/create` filename: `test ls>t.txt` text: `1`
-![[Pasted image 20220926235102.png]]
+![pipe ls to file fail](images/createls.png)
 This looks promising
-![[Pasted image 20220926235210.png]]
+![shows that it at least created an extra file](images/openttxt.png)
 Damnit, not quite
 *many, attempts later*
 Finally realised that the filenames are all converted to uppercase, so I'd have to figure something to get them back to lowercase, due to linux (by default) using case sensitive filesystems, and bash being a case sensitive shell
 I spent a good while on figuring this one out.
 Eventually I realised the file contents actually preserved the text, so I started trying to execute the contents of a file.
 After many attempts I finally had this:
-![[Pasted image 20220927000902.png]]
+![plainly embedded script into a file normally](images/createscript.png)
 *a few more attempts at executing said file*
+This time I tried some "dot sourcing"
 `/create` filename: `q $(. a)` text: `q`
-![[Pasted image 20220927001023.png]] [^5]
+![dot sourced script but opened wrong file](images/createexecute.png) [^5]
 [internal screaming] ~~maybe a small amount of external at this point~~
 So close it hurts!
 But wait! There's more!
 ## Is this a flag?
-![[Pasted image 20220927002920.png]]
+![opened unexpectedly created file containing flag](images/openflag.png)
 I thought the contents were going to go into `fl`, but it turns out it somehow went into `Q`!
 Flag get! 😩
 
 
 ## Final thoughts
 While I was a little sad to have missed out on the blood (by almost an entire hour!), I think coming in 2nd place for this challenge is still an amazing feat.
-![[Pasted image 20220927003436.png]]
+![we got second place on the challenge but thats okay](images/solves.png)
 Also this was very fun :D
 
 [^1]:Previously the bot would actually not respond at all, and discord would throw you an error. I can only imagine how many people suddenly realised how big of a hint this message was
