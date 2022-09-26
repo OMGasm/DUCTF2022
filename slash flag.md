@@ -1,10 +1,19 @@
 ---
 created: 2022-09-24T04:25:50+10:00
-updated: 2022-09-27T00:14:47+10:00
+updated: 2022-09-27T00:51:24+10:00
 tags: [command-injection, discord-bot, discord.js]
 ---
 # Slash flag
 ![[Pasted image 20220926211409.png]]
+
+## Contents
+1. [[#Preface]]
+2. [[#Just use a command simple right]]
+3. [[#This is not the command you're looking for]]
+4. [[#This is gonna get a little creative]]
+5. [[#Is this a flag]]
+6. [[#Final thoughts]]
+
 ## Preface
 I only started writing this after the event, so some information has been added in after the fact, and screenshots might show slightly different results than I originally saw
 
@@ -16,13 +25,14 @@ Let's actually look at its profile properly
  ![[Pasted image 20220925214050.png]]
  Open source, very nice
  A cursory glance reveals that it has `clear`, `create`, `delete`, `list`, and `open` as available commands
- ![[Pasted image 20220925213206.png]] 
+ ![[Pasted image 20220925213206.png]] [^1]
 
-Oh, I guess you can't use it privately, that's a shame[^1]
+Oh, I guess you can't use it privately, that's a shame
 Time to experiment on the bot spam channel in public :s
 *a few moments later*
 absolutely nothing
 let's try something fancy I just learned from another competitor the night before
+
 ![[Pasted image 20220926205018.png]]
 Turns out you can embed slash commands in chat just like mentions and channels with `</name:commandid>`, and you can grab that id by right clicking on that command popup which I got from the DM (with developer mode enabled)
 But it's also weird that it's showing up a little unusual because normally it appears like this:
@@ -102,7 +112,17 @@ After many attempts I finally had this:
 ![[Pasted image 20220927001023.png]] [^5]
 [internal screaming] ~~maybe a small amount of external at this point~~
 So close it hurts!
+But wait! There's more!
+## Is this a flag?
+![[Pasted image 20220927002920.png]]
+I thought the contents were going to go into `fl`, but it turns out it somehow went into `Q`!
+Flag get! 😩
 
+
+## Final thoughts
+While I was a little sad to have missed out on the blood (by almost an entire hour!), I think coming in 2nd place for this challenge is still an amazing feat.
+![[Pasted image 20220927003436.png]]
+Also this was very fun :D
 
 [^1]:Previously the bot would actually not respond at all, and discord would throw you an error. I can only imagine how many people suddenly realised how big of a hint this message was
 [^2]: Yeah, it definitely wasn't 64 servers at the time I was actually doing the challenge
