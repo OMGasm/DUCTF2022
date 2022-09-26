@@ -1,6 +1,6 @@
 ---
 created: 2022-09-24T04:25:50+10:00
-updated: 2022-09-26T23:05:44+10:00
+updated: 2022-09-27T00:14:47+10:00
 tags: [command-injection, discord-bot, discord.js]
 ---
 # Slash flag
@@ -75,9 +75,37 @@ List? Clear? Unfortunately these don't appear to take any user input.
 Delete? Turns out the parameters were sanitised like in /open. [^3]
 
 Now we're down to one command, it's hopefully gonna be create[^4]
+This time there are 3 particular lines of interest, which are very similar to open
+```js
+const filename = interaction.options.getString("filename").toUpperCase();
+const text = quote(interaction.options.getString("text").split(" "));
+//...
+await runCommand(`echo '${text}' > ${filename}`, interaction.guildId);
+```
+What's this? Filename injection? Nice.
+
+## This is gonna get a little *creative*
+Let's try something
+`/create` filename: `test ls>t.txt` text: `1`
+![[Pasted image 20220926235102.png]]
+This looks promising
+![[Pasted image 20220926235210.png]]
+Damnit, not quite
+*many, attempts later*
+Finally realised that the filenames are all converted to uppercase, so I'd have to figure something to get them back to lowercase, due to linux (by default) using case sensitive filesystems, and bash being a case sensitive shell
+I spent a good while on figuring this one out.
+Eventually I realised the file contents actually preserved the text, so I started trying to execute the contents of a file.
+After many attempts I finally had this:
+![[Pasted image 20220927000902.png]]
+*a few more attempts at executing said file*
+`/create` filename: `q $(. a)` text: `q`
+![[Pasted image 20220927001023.png]] [^5]
+[internal screaming] ~~maybe a small amount of external at this point~~
+So close it hurts!
 
 
 [^1]:Previously the bot would actually not respond at all, and discord would throw you an error. I can only imagine how many people suddenly realised how big of a hint this message was
 [^2]: Yeah, it definitely wasn't 64 servers at the time I was actually doing the challenge
 [^3]: Of course, I spent some time with this one while investigating along side open before I realised what was going on
 [^4]: Through the magic of anachronic story telling, little did you know that this was actually the 2nd file I opened, but initially didn't understand how it worked because I was too far down other rabbit holes
+[^5]: Holy shit you have no idea how often discord would't run the command and just send it as a plain message
