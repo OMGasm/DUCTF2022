@@ -1,15 +1,15 @@
 ---
 created: 2022-09-27T00:20:17+10:00
-updated: 2022-09-27T01:46:02+10:00
+updated: 2022-09-27T01:51:32+10:00
 ---
 # DUCTF2022
 DownUnderCTF 2022 writeups
 
-Had a lot of fun 
+These have been a lot of fun ^^
 
 | Category | Challenge                                                         |
 | -------- | ----------------------------------------------------------------- |
-| misc     | [Slash Flag](Slash%20Flag.md)                                     |
+| misc     | [slash flag](slash%20flag.md)                                     |
 | rev      | [Legit App Not Ransomware](Legit%20App%20Not%20Ransomware.md)     |
 | rev      | [Clicky](Clicky.md)                                               |
 | pwn      | [babyp(y)wn](babypywn.md)                                         |
