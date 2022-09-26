@@ -1,6 +1,6 @@
 ---
 created: 2022-09-24T04:25:50+10:00
-updated: 2022-09-27T01:24:53+10:00
+updated: 2022-09-27T01:27:28+10:00
 tags: [command-injection, discord-bot, discord.js]
 ---
 # Slash flag
