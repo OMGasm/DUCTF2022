@@ -1,17 +1,17 @@
 ---
 created: 2022-09-24T04:25:50+10:00
-updated: 2022-09-27T01:27:28+10:00
+updated: 2022-09-27T01:34:35+10:00
 tags: [command-injection, discord-bot, discord.js]
 ---
 # Slash flag
 ![slash flag challenge description](images/challengedesc.png)
 ## Contents
-1. [[#Preface]]
-2. [[#Just use a command simple right]]
-3. [[#This is not the command you're looking for]]
-4. [[#This is gonna get a little creative]]
-5. [[#Is this a flag]]
-6. [[#Final thoughts]]
+1. [Preface](#Preface)
+2. [Just use a command simple right](#Just use a command simple right)
+3. [This is not the command you're looking for](#This is not the command you're looking for)
+4. [This is gonna get a little creative](#This is gonna get a little creative)
+5. [Is this a flag](#Is this a flag)
+6. [Final thoughts](#Final thoughts)
 
 ## Preface
 I only started writing this after the event, so some information has been added in after the fact, and screenshots might show slightly different results than I originally saw
